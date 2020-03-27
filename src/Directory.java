@@ -11,6 +11,10 @@ public class Directory {
 		subDirectories = new ArrayList<Directory>();
 		files = new ArrayList<File>();
 	}
+	
+	public void addDirectory(Directory folder) {
+		subDirectories.add(folder);
+	}
 	// ...
 	Directory findDirectory (String path, int c) {
 		//path = root/folder1/folder2/folder3
