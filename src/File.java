@@ -10,4 +10,7 @@ public class File {
 	public String getFilePath() {
 		return filePath;
 	}
+	public void deleteFile() {
+		deleted = true;
+	}
 }

@@ -43,6 +43,14 @@ public class Directory {
 		}
 		return null;
 	}
+	
+	void deleteFolder() {
+		for (int i=0 ; i<subDirectories.size(); i++)
+			subDirectories.get(i).deleteFolder();
+		for (int i=0; i<files.size(); i++)
+			files.get(i).deleteFile();
+		deleted = true;
+	}
 	File findFile (String path) {
 		//path = root/folder1/folder2/file3.txt
 		// 		root/folder3

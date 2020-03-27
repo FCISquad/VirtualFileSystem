@@ -49,13 +49,26 @@ public class VFS {
 		System.out.println("Directory Created Successfully!");
 		return true;
 	}
-	public boolean deleteFile (String str) {
+	public boolean deleteFile (String path) {
+		File f = root.findFile(path);
 		//check that the file exists
-		return false;
+		if (f == null) {
+			System.out.println("Error! File does not exist!");
+			return false;
+		}
+		f.deleteFile();
+		System.out.println("File Deleted Successfully!");
+		return true;
 	}
-	public boolean deleteFolder (String str) {
-		//check that the folder exists
-		return false;
+	public boolean deleteFolder (String path) {
+		Directory dir = root.findDirectory(path, 2);
+		if (dir == null) {
+			System.out.println("Error! Folder does not exists!");
+			return false;
+		}
+		dir.deleteFolder();
+		System.out.println("Folder deleted successfully!");
+		return true;
 	}
 	public boolean DisplayDiskStatus( ) {
 		
