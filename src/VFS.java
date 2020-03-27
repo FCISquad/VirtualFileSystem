@@ -92,6 +92,7 @@ public class VFS {
 				}
 				dir.addFile(new File(path, fileAllocatedBlocks));
 				spaceManager(fileAllocatedBlocks, true);
+				System.out.println( "File created Successfully" );
 				return true;
 			}
 			else {
@@ -100,18 +101,19 @@ public class VFS {
 		}
 		else {
 			ArrayList<Integer> fileAllocatedBlocks = new ArrayList<Integer>();
-			for ( int i = 0 ,j  = 0; i < SystemBlocks.size() && j < size; i++ ) {
+			for ( int i = 0 ,j = 0; i < SystemBlocks.size() && j < size; i++ ) {
 				if ( SystemBlocks.get(i) == 0 ) {
 					fileAllocatedBlocks.add(i);
-					SystemBlocks.set(i, 1);
 					j++;
 				}
 			}
 			
 			if ( fileAllocatedBlocks.size() == size ) {
+				spaceManager(fileAllocatedBlocks, true);
 				dir.addFile(new File(path, indexBlockCounter));
 				indexBlockToBlocks.put(indexBlockCounter, fileAllocatedBlocks);
 				indexBlockCounter++;
+				System.out.println( "File created Successfully" );
 				return true;
 			}
 			else {
