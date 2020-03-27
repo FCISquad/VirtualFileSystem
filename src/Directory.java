@@ -4,12 +4,13 @@ public class Directory {
 	private String directoryPath;
 	private ArrayList<File> files;
 	private ArrayList<Directory> subDirectories;
-	private boolean deleted = false;
+	private boolean deleted;
 	
 	public Directory(String directoryPath) {
 		this.directoryPath = directoryPath;
 		subDirectories = new ArrayList<Directory>();
 		files = new ArrayList<File>();
+		deleted = false;
 	}
 	public void addFile(File file) {
 		files.add(file);

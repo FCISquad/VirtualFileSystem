@@ -6,6 +6,7 @@ public class File {
 	private boolean deleted;
 	public File(String path) {
 		filePath = path;
+		deleted = false;
 	}
 	public File(String path, ArrayList<Integer> fileAllocatedBlocks) {
 		// TODO Auto-generated constructor stub
