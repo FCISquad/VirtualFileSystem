@@ -32,10 +32,22 @@ public class VFS {
 		
 		return false;
 	}
-	public boolean createFolder (String str) {
-		//check path to the last exists'/'
-		//check the Folder after '/' doesn't exist
-		return false;
+	public boolean createFolder (String path) {
+		Directory dir = root.findDirectory(path, 2);
+		if (dir != null) {
+			System.out.println("Error! Directory already exists!");
+			return false;
+		}
+		int index = path.lastIndexOf('/');
+		String newPath = path.substring(0,index); //check the directory that folder to be created in exists
+		dir = root.findDirectory(newPath, 2);
+		if (dir == null) {
+			System.out.println("Error! Path is not correct. No such path found.");
+			return false;
+		}
+		dir.addDirectory(new Directory(path));
+		System.out.println("Directory Created Successfully!");
+		return true;
 	}
 	public boolean deleteFile (String str) {
 		//check that the file exists
