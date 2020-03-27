@@ -10,7 +10,7 @@ public class VFS {
 	public VFS(int blocks, int allocationTechnique) throws Throwable {
 		this.blocks = blocks;
 		this.allocationTechnique = allocationTechnique;
-		root = new Directory();
+		root = new Directory("root");
 		SystemBlocks = new ArrayList<Integer>(blocks);
 		
 		for (int i = 0; i < blocks; i++) 
@@ -27,6 +27,9 @@ public class VFS {
 		//check path to the last exists'/'
 		//check the file after '/' doesn't exist
 		//check that size fits in the space.
+		// root/folder/file
+		//Call for root.find(split); that returns true or false;
+		
 		return false;
 	}
 	public boolean createFolder (String str) {
@@ -54,6 +57,36 @@ public class VFS {
 		this.file = vfs;
 	}
 	
+	/*public void test() {
+		Directory dir1 = new Directory("root/folder1");
+		Directory dir2 = new Directory("root/folder1/folder2");
+		Directory dir3 = new Directory("root/folder2");
+		Directory dir4 = new Directory("root/folder2/hussien");
+		dir1.subDirectories.add(dir2);
+		dir3.subDirectories.add(dir4);
+		root.subDirectories.add(dir1);
+		root.subDirectories.add(dir3);
+		Directory temp = root.findDirectory("root", 2);
+		System.out.println(temp.directoryPath);
+	}
+	public void testFile() { 
+		Directory dir0 = new Directory("root/folder1");
+		File f = new File("root/folder1/khaled.txt");
+		File f2 = new File("root/folder2/temp.txt");
+		Directory dir2 = new Directory("root/folder1/folder2");
+		Directory dir3 = new Directory("root/folder2");
+		Directory dir4 = new Directory("root/folder2/hussien");
+		dir0.files.add(f);
+		dir3.files.add(f2);
+		dir0.subDirectories.add(dir2);
+		dir3.subDirectories.add(dir4);
+		root.subDirectories.add(dir0);
+		root.subDirectories.add(dir3);
+		File temp = root.findFile("root/folder1/khaled.txt");
+		System.out.println(temp.getFilePath());
+		temp = root.findFile("root/folder2/temp.txt");
+		System.out.println(temp.getFilePath());
+	}*/
 	public void close () {
 		//implement
 	}
