@@ -25,7 +25,7 @@ public class VFS {
 	}
 	public static void main (String [] args) throws Throwable {
 		VFS vfs = new VFS(50, 1);
-		vfs.createFile("file.txt", 10);
+		vfs.DisplayDiskStatus();
 	}
 	public boolean createFile (String path, int size) {
 		//check path to the last exists'/'
@@ -117,6 +117,22 @@ public class VFS {
 		return true;
 	}
 	public boolean DisplayDiskStatus( ) {
+		int freeSpace = 0;
+		String free = "" ;
+		String allocated = "";
+		for (int i=0 ; i<SystemBlocks.size(); i++)
+			if (SystemBlocks.get(i) == 0){
+				free += " " + i;
+				freeSpace++;
+			}
+			else {
+				allocated += " " + i ;
+			}
+		System.out.println("Disk Status: ");
+		System.out.println("1- Empty Space: " + freeSpace);
+		System.out.println("2- Allocated Space: " + (blocks-freeSpace));
+		System.out.println("3- Empty Blocks:" + free);
+		System.out.println("4- Allocated Blocks:"+ allocated);
 		
 		return true;
 	}
