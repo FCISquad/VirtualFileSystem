@@ -5,7 +5,8 @@ public class VFS {
 	private int allocationTechnique;
 	private java.io.File file;
 	private Directory root;
-	ArrayList<Integer> SystemBlocks;
+	private static ArrayList<Integer> SystemBlocks;
+	
 	
 	public VFS(int blocks, int allocationTechnique) throws Throwable {
 		this.blocks = blocks;
@@ -27,6 +28,18 @@ public class VFS {
 		VFS vfs = new VFS(50, 1);
 		vfs.DisplayDiskStatus();
 	}
+
+	public static boolean spaceManager(ArrayList<Integer> blocks , boolean allocate) {
+		if (allocate) {
+			for (int i=0 ; i<blocks.size() ; i++)
+				SystemBlocks.set(blocks.get(i), 1);
+		} else {
+			for (int i=0 ; i<blocks.size() ; i++)
+				SystemBlocks.set(blocks.get(i), 0);			
+		}
+		return true;
+	}
+
 	public boolean createFile (String path, int size) {
 		//check path to the last exists'/'
 		//check the file after '/' doesn't exist
@@ -70,6 +83,7 @@ public class VFS {
 					fileAllocatedBlocks.add(i);
 				}
 				dir.addFile(new File(path, fileAllocatedBlocks));
+				spaceManager(fileAllocatedBlocks, true);
 				return true;
 			}
 			else {

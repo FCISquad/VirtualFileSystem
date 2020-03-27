@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 
+
 public class File {
 	private String filePath;
 	private ArrayList<Integer> allocatedBlocks;
@@ -9,12 +10,18 @@ public class File {
 		deleted = false;
 	}
 	public File(String path, ArrayList<Integer> fileAllocatedBlocks) {
-		// TODO Auto-generated constructor stub
+		this.filePath = path;
+		this.allocatedBlocks = fileAllocatedBlocks;
+		deleted = false;
 	}
 	public String getFilePath() {
 		return filePath;
 	}
 	public void deleteFile() {
 		deleted = true;
+		VFS.spaceManager(allocatedBlocks, false);
+	}
+	public boolean isDeleted () {
+		return deleted;
 	}
 }

@@ -2,8 +2,8 @@ import java.util.ArrayList;
 
 public class Directory {
 	private String directoryPath;
-	public ArrayList<File> files;
-	public ArrayList<Directory> subDirectories;
+	private ArrayList<File> files;
+	private ArrayList<Directory> subDirectories;
 	private boolean deleted;
 	
 	public Directory(String directoryPath) {
@@ -75,6 +75,8 @@ public class Directory {
 		for (int i=0; i < level; i++) {
 			s += "     ";
 		}
+		if (this.deleted == true)
+			return;
 		s += "* ";
 		int index = directoryPath.lastIndexOf('/');
 		String newPath;
@@ -88,6 +90,8 @@ public class Directory {
 		String temp = "";
 		
 		for (int i=0; i < files.size(); i++) {
+			if (files.get(i).isDeleted())
+				continue;
 			for (int j=0; j < level+1; j++) {
 				s += "     ";
 			}
