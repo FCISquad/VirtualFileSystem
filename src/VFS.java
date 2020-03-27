@@ -144,6 +144,8 @@ public class VFS {
 		Directory dir0 = new Directory("root/folder1");
 		File f = new File("root/folder1/khaled.txt");
 		File f2 = new File("root/folder2/temp.txt");
+		File f3 = new File("root/ehap.txt");
+		root.files.add(f3);
 		Directory dir2 = new Directory("root/folder1/folder2");
 		Directory dir3 = new Directory("root/folder2");
 		Directory dir4 = new Directory("root/folder2/hussien");
@@ -157,6 +159,7 @@ public class VFS {
 		System.out.println(temp.getFilePath());
 		temp = root.findFile("root/folder2/temp.txt");
 		System.out.println(temp.getFilePath());
+		DisplayDiskStructure();
 	}*/
 	public void close () {
 		//implement
