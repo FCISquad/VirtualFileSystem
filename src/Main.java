@@ -1,8 +1,10 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
 
 	public static void main(String[] args) throws Throwable {
+
 		int choice = 0 ;
 		System.out.println("Choose: \n 1- Create New VFS File \n 2- Load existing VFS File \\n");
 		Scanner in = new Scanner(System.in);
@@ -10,18 +12,55 @@ public class Main {
 		while (true) {
 			choice = in.nextInt();
 			if (choice == 1) {
-				System.out.println("Enter number of blocks: ");
+				System.out.print("Enter number of blocks: ");
 				int blocks = in.nextInt();
-				System.out.println("Enter allocation technique: \n 1- Contiguous \n 2- Indexed \n");
+				System.out.println("Enter allocation technique: \n 1- Contiguous \n 2- Indexed");
 				choice = in.nextInt();
 				v = new VFS(blocks, choice);
 				break;
 			} else if (choice == 2) {
-			
+				v = new VFS(4, choice);
 				break;
 			}
 			else {
 				System.out.println("Enter a valid input");
+			}	
+		}
+		String command;
+		in.nextLine();
+		while(true) {
+			System.out.print("\nuser>>");
+			command = in.nextLine();
+			if (command.equalsIgnoreCase("Exit")){
+				v.close();
+				break;
+			}
+			String [] split = command.split(" ");
+			if (split[0].equalsIgnoreCase("CreateFile")) {
+				v.createFile(split[1], Integer.parseInt(split[2]));
+				
+			} else if (split[0].equalsIgnoreCase("CreateFolder")) {
+				
+				v.createFolder(split[1]);
+				
+			} else if (split[0].equalsIgnoreCase("DeleteFile")) {
+				
+				v.deleteFile(split[1]);
+				
+			} else if (split[0].equalsIgnoreCase("DeleteFolder")) {
+				
+				v.deleteFolder(split[1]);
+				
+			} else if (split[0].equalsIgnoreCase("DisplayDiskStatus")) {
+				
+				v.DisplayDiskStatus();
+				
+			} else if (split[0].equalsIgnoreCase("DisplayDiskStructure")) {
+				
+				v.DisplayDiskStructure(); 
+				
+			} else {
+				System.out.println("Command Not Valid");
 			}
 			
 		}

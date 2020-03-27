@@ -1,8 +1,9 @@
+import java.util.ArrayList;
 
 public class Directory {
 	private String directoryPath;
-	private File[] files;
-	private Directory[] subDirectories;
+	private ArrayList<File> files;
+	private ArrayList<Directory> subDirectories;
 	private boolean deleted = false;
 	
 	// ...
