@@ -1,14 +1,14 @@
-import java.util.ArrayList;
+
 import java.util.Scanner;
 
 public class Main {
 
 	public static void main(String[] args) throws Throwable {
-		//VFS NN = new VFS(1, 1);
+		VFS NN = new VFS(1, 1);
 		//NN.test();
 		//NN.testFile();
 		int choice = 0 ;
-		System.out.println("Choose: \n 1- Create New VFS File \n 2- Load existing VFS File \\n");
+		System.out.println("Choose: \n 1- Create New VFS File \n 2- Load existing VFS File");
 		Scanner in = new Scanner(System.in);
 		VFS v ;
 		while (true) {

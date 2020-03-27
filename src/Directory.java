@@ -71,6 +71,41 @@ public class Directory {
 		return null;
 	}
 	public void printDirectoryStructure(int level) {
+		String s = "";
+		for (int i=0; i < level; i++) {
+			s += "     ";
+		}
+		if (this.deleted == true)
+			return;
+		s += "* ";
+		int index = directoryPath.lastIndexOf('/');
+		String newPath;
+		if (index != -1)
+			newPath = directoryPath.substring(index+1,directoryPath.length());
+		else
+			newPath = directoryPath;
+		s += newPath;
+		System.out.println(s);
+		s = "";
+		String temp = "";
+		
+		for (int i=0; i < files.size(); i++) {
+			if (files.get(i).isDeleted())
+				continue;
+			for (int j=0; j < level+1; j++) {
+				s += "     ";
+			}
+			s+= "* ";
+			temp = files.get(i).getFilePath();
+			index = temp.lastIndexOf('/');
+			newPath = temp.substring(index+1,temp.length());
+			s += newPath;
+			System.out.println(s);
+			s = "";
+		}
+		for (int i=0; i< subDirectories.size(); i++) {
+			subDirectories.get(i).printDirectoryStructure(level+1);
+		}
 		
 	}
 	

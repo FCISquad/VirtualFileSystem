@@ -6,7 +6,8 @@ public class VFS {
 	private int allocationTechnique;
 	private java.io.File file;
 	private Directory root;
-	ArrayList<Integer> SystemBlocks;
+	private static ArrayList<Integer> SystemBlocks;
+	
 	
 	private Integer indexBlockCounter;
 	private HashMap<Integer, ArrayList<Integer>> indexBlockToBlocks;
@@ -33,8 +34,20 @@ public class VFS {
 	}
 	public static void main (String [] args) throws Throwable {
 		VFS vfs = new VFS(50, 1);
-		vfs.createFile("file.txt", 10);
+		vfs.DisplayDiskStatus();
 	}
+
+	public static boolean spaceManager(ArrayList<Integer> blocks , boolean allocate) {
+		if (allocate) {
+			for (int i=0 ; i<blocks.size() ; i++)
+				SystemBlocks.set(blocks.get(i), 1);
+		} else {
+			for (int i=0 ; i<blocks.size() ; i++)
+				SystemBlocks.set(blocks.get(i), 0);			
+		}
+		return true;
+	}
+
 	public boolean createFile (String path, int size) {
 		//check path to the last exists'/'
 		//check the file after '/' doesn't exist
@@ -78,6 +91,7 @@ public class VFS {
 					fileAllocatedBlocks.add(i);
 				}
 				dir.addFile(new File(path, fileAllocatedBlocks));
+				spaceManager(fileAllocatedBlocks, true);
 				return true;
 			}
 			else {
@@ -145,6 +159,22 @@ public class VFS {
 		return true;
 	}
 	public boolean DisplayDiskStatus( ) {
+		int freeSpace = 0;
+		String free = "" ;
+		String allocated = "";
+		for (int i=0 ; i<SystemBlocks.size(); i++)
+			if (SystemBlocks.get(i) == 0){
+				free += " " + i;
+				freeSpace++;
+			}
+			else {
+				allocated += " " + i ;
+			}
+		System.out.println("Disk Status: ");
+		System.out.println("1- Empty Space: " + freeSpace);
+		System.out.println("2- Allocated Space: " + (blocks-freeSpace));
+		System.out.println("3- Empty Blocks:" + free);
+		System.out.println("4- Allocated Blocks:"+ allocated);
 		
 		return true;
 	}
@@ -172,6 +202,8 @@ public class VFS {
 		Directory dir0 = new Directory("root/folder1");
 		File f = new File("root/folder1/khaled.txt");
 		File f2 = new File("root/folder2/temp.txt");
+		File f3 = new File("root/ehap.txt");
+		root.files.add(f3);
 		Directory dir2 = new Directory("root/folder1/folder2");
 		Directory dir3 = new Directory("root/folder2");
 		Directory dir4 = new Directory("root/folder2/hussien");
@@ -185,6 +217,7 @@ public class VFS {
 		System.out.println(temp.getFilePath());
 		temp = root.findFile("root/folder2/temp.txt");
 		System.out.println(temp.getFilePath());
+		DisplayDiskStructure();
 	}*/
 	public void close () {
 		//implement
