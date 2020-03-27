@@ -23,13 +23,36 @@ public class VFS {
 		
 		file.createNewFile();
 	}
+	public static void main (String [] args) throws Throwable {
+		VFS vfs = new VFS(50, 1);
+		vfs.createFile("file.txt", 10);
+	}
 	public boolean createFile (String str, int size) {
 		//check path to the last exists'/'
 		//check the file after '/' doesn't exist
 		//check that size fits in the space.
 		// root/folder/file
 		//Call for root.find(split); that returns true or false;
-		
+		for (int i = 20 ; i<40 ; i++)
+			SystemBlocks.set(i, 1);
+		if (allocationTechnique == 1) {
+			int free = blocks+50, base = -1, loop = 0;
+			for (int i=0 ; i<blocks; i++){
+				if (SystemBlocks.get(i) == 0)
+					loop++;
+				else {
+					if (loop < free && loop >= size){
+						free = loop;
+						base = i-loop;
+					}
+					loop = 0;
+				}
+			}
+			if (loop < free && loop >= size){
+				free = loop;
+				base = blocks-loop;
+			}
+		}
 		return false;
 	}
 	public boolean createFolder (String str) {
