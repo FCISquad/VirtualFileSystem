@@ -27,16 +27,28 @@ public class VFS {
 		VFS vfs = new VFS(50, 1);
 		vfs.createFile("file.txt", 10);
 	}
-	public boolean createFile (String str, int size) {
+	public boolean createFile (String path, int size) {
 		//check path to the last exists'/'
 		//check the file after '/' doesn't exist
 		//check that size fits in the space.
 		// root/folder/file
 		//Call for root.find(split); that returns true or false;
-		for (int i = 20 ; i<40 ; i++)
-			SystemBlocks.set(i, 1);
+		//for (int i = 20 ; i<40 ; i++)
+			//SystemBlocks.set(i, 1);
+		int index = path.lastIndexOf('/');
+		String newPath = path.substring(0, index);
+		Directory dir = root.findDirectory(newPath, 2);
+		if (dir == null) {
+			System.out.println("Error! Path is not correct. No such path found.");
+			return false;
+		}
+		File f = root.findFile(path);
+		if (f != null) {
+			System.out.println("File already Exists!");
+			return false;
+		}
 		if (allocationTechnique == 1) {
-			int free = blocks+50, base = -1, loop = 0;
+			int free = blocks+1, base = -1, loop = 0; //01010111111111111101
 			for (int i=0 ; i<blocks; i++){
 				if (SystemBlocks.get(i) == 0)
 					loop++;
@@ -51,6 +63,17 @@ public class VFS {
 			if (loop < free && loop >= size){
 				free = loop;
 				base = blocks-loop;
+			}
+			if (free >= size && free <= blocks) {
+				ArrayList<Integer> fileAllocatedBlocks = new ArrayList<Integer>();
+				for (int i=base ; i<base+size ; i++) {
+					fileAllocatedBlocks.add(i);
+				}
+				dir.addFile(new File(path, fileAllocatedBlocks));
+				return true;
+			}
+			else {
+				System.out.println("There is not enough memory!");
 			}
 		}
 		return false;

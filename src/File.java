@@ -7,6 +7,9 @@ public class File {
 	public File(String path) {
 		filePath = path;
 	}
+	public File(String path, ArrayList<Integer> fileAllocatedBlocks) {
+		// TODO Auto-generated constructor stub
+	}
 	public String getFilePath() {
 		return filePath;
 	}

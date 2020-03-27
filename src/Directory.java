@@ -11,7 +11,9 @@ public class Directory {
 		subDirectories = new ArrayList<Directory>();
 		files = new ArrayList<File>();
 	}
-	
+	public void addFile(File file) {
+		files.add(file);
+	}
 	public void addDirectory(Directory folder) {
 		subDirectories.add(folder);
 	}
@@ -38,7 +40,7 @@ public class Directory {
 		String newPath = path.substring(0, index);
 	
 		for (int i=0 ; i<subDirectories.size() ; i++) {
-			if (subDirectories.get(i).directoryPath.equals(newPath))
+			if (subDirectories.get(i).directoryPath.equals(newPath) && subDirectories.get(i).deleted == false)
 				return subDirectories.get(i).findDirectory(path, ++c);
 		}
 		return null;
@@ -61,7 +63,7 @@ public class Directory {
 		String newPath = path.substring(0,index);
 		Directory dir = findDirectory(newPath, 2);
 
-		if (dir == null) return null;
+		if (dir == null || dir.deleted == true) return null;
 		for (int i=0 ; i<dir.files.size() ; i++)
 			if (dir.files.get(i).getFilePath().equals(path))
 				return dir.files.get(i);
