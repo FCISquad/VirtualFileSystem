@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class VFS {
 	private int blocks;
@@ -7,7 +8,14 @@ public class VFS {
 	private Directory root;
 	ArrayList<Integer> SystemBlocks;
 	
+	private Integer indexBlockCounter;
+	private HashMap<Integer, ArrayList<Integer>> indexBlockToBlocks;
+	
 	public VFS(int blocks, int allocationTechnique) throws Throwable {
+		this.indexBlockCounter = 0;
+		indexBlockToBlocks = new HashMap<Integer, ArrayList<Integer>>();
+		
+		
 		this.blocks = blocks;
 		this.allocationTechnique = allocationTechnique;
 		root = new Directory("root");
@@ -70,6 +78,26 @@ public class VFS {
 					fileAllocatedBlocks.add(i);
 				}
 				dir.addFile(new File(path, fileAllocatedBlocks));
+				return true;
+			}
+			else {
+				System.out.println("There is not enough memory!");
+			}
+		}
+		else {
+			ArrayList<Integer> fileAllocatedBlocks = new ArrayList<Integer>();
+			for ( int i = 0 ,j  = 0; i < SystemBlocks.size() && j < size; i++ ) {
+				if ( SystemBlocks.get(i) == 0 ) {
+					fileAllocatedBlocks.add(i);
+					SystemBlocks.set(i, 1);
+					j++;
+				}
+			}
+			
+			if ( fileAllocatedBlocks.size() == size ) {
+				dir.addFile(new File(path, indexBlockCounter));
+				indexBlockToBlocks.put(indexBlockCounter, fileAllocatedBlocks);
+				indexBlockCounter++;
 				return true;
 			}
 			else {
