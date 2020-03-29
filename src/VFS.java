@@ -2,11 +2,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class VFS {
-	private int blocks;
-	private int allocationTechnique;
+	private int blocks; // wanted
+	private int allocationTechnique; // // wanted
 	private java.io.File file;
 	private Directory root;
-	private static ArrayList<Integer> SystemBlocks;
+	private static ArrayList<Integer> SystemBlocks; // // wanted+ files(root+files)
 	
 	
 	private Integer indexBlockCounter;
