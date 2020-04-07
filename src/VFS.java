@@ -213,8 +213,10 @@ public class VFS {
         		
               }
               else
-              {    if(st != "End")	  
-            	     this.createFolder(arrOfStr[0]);
+              {    if(st.contentEquals( "End")) 
+            	       break ;           	       
+            	   else 
+            		   this.createFolder(arrOfStr[0]);  
               }	 
           }
           br.close();
