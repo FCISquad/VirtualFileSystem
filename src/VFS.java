@@ -198,7 +198,7 @@ public class VFS {
           {	  
         	  this.SystemBlocks.add(Integer.parseInt(arrOfStr[i]));
           }
-          while ((st = br.readLine()) != null) 
+          while ((st = br.readLine()) != "End") 
           {	  
         	  arrOfStr= st.split(" ");
               if (arrOfStr.length > 2)        
@@ -216,8 +216,8 @@ public class VFS {
         		
               }
               else
-              { 	  
-            	   this.createFolder(arrOfStr[0]);
+              {    if(st != "End")	  
+            	     this.createFolder(arrOfStr[0]);
               }	 
           }
 	 }
@@ -273,6 +273,9 @@ public class VFS {
 		  }
 		  buffer.newLine();
 		  root.writeFilesStructure(buffer);
+		  buffer.write("End");
+		  buffer.newLine();
+		  root.writeDirectoryStructure(0, buffer);
 		  buffer.close();
 
 		
