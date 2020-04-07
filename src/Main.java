@@ -1,4 +1,6 @@
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 public class Main {
@@ -22,8 +24,16 @@ public class Main {
 				v = new VFS(blocks, choice);
 				break;
 			} else if (choice == 2) {
+				//changing print stream
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				PrintStream ps = new PrintStream(baos);
+				PrintStream old = System.out;
+				System.setOut(ps);
 				v = new VFS();
 				v.read();
+				//returning to old stream
+				System.out.flush();
+				System.setOut(old);
 				break;
 			}
 			else {
