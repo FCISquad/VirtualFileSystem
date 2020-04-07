@@ -1,12 +1,11 @@
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 public class Main {
 
 	public static void main(String[] args) throws Throwable {
-		VFS NN = new VFS(1, 1);
-		//NN.test();
-		//NN.testFile();
 		int choice = 0 ;
 		
 		System.out.println("Choose: \n 1- Create New VFS File \n 2- Load existing VFS File");
@@ -22,8 +21,16 @@ public class Main {
 				v = new VFS(blocks, choice);
 				break;
 			} else if (choice == 2) {
+				//changing print stream
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				PrintStream ps = new PrintStream(baos);
+				PrintStream old = System.out;
+				System.setOut(ps);
 				v = new VFS();
 				v.read();
+				//returning to old stream
+				System.out.flush();
+				System.setOut(old);
 				break;
 			}
 			else {
