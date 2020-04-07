@@ -159,28 +159,34 @@ public class Directory {
 	{	
        for (int i = 0 ; i<subDirectories.size();i++)
        {	
+    	if (!subDirectories.get(i).deleted) {   
 	    buffer.write(subDirectories.get(i).directoryPath+ " ");
 	    buffer.newLine();
-       }   
+	    }
+      }   
 
 	   for (int i=0; i< subDirectories.size(); i++) {
 		  subDirectories.get(i).writeFilesStructure( buffer);
 	   }
 	for (int i = 0 ; i < files.size();i++)
 	    {	
-	      ArrayList<Integer> arr = new ArrayList<Integer>();
-	      arr = files.get(i).allocated() ;
-		  buffer.write(files.get(i).getFilePath()+ " ");
-		  buffer.write(Integer.toString(arr.size())+ " ");
-		  for(int j = 0 ; j < arr.size(); j++)
-		  {	  
-			  buffer.write(Integer.toString(arr.get(j))+ " "); 
-		  }
-			  
-		  buffer.newLine();	
-	     }
+		  if(!files.get(i).isDeleted())
+		  {		  
+             ArrayList<Integer> arr = new ArrayList<Integer>();
+              arr = files.get(i).allocated() ;
+              buffer.write(files.get(i).getFilePath()+ " ");
+              buffer.write(Integer.toString(arr.size())+ " ");
+              for(int j = 0 ; j < arr.size(); j++)
+              {	  
+	            buffer.write(Integer.toString(arr.get(j))+ " "); 
+              }
+	  
+              buffer.newLine();
+          }	
+ 
+	    }
 	
-	}
+    }
 	public int sizeOfRoot(BufferedWriter buffer, int s) throws IOException
 	{
 		s += files.size() ;		
@@ -191,16 +197,7 @@ public class Directory {
 		}
 		return s ;	
 	}
-	public int numberOfFiles(BufferedWriter buffer, int s)
-	{
-		s += files.size() ;		
-		for (int i=0; i< subDirectories.size(); i++) {
-			s+= subDirectories.get(i).files.size();
-		}
-	  
-	 
-		return s ;
-	}
+
 	
 	
 	

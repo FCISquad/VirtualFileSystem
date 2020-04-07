@@ -187,6 +187,7 @@ public class VFS {
 	}
 	public void read() throws IOException
 	{	
+		  String st;
           FileReader fr = new FileReader("DiskStructure.vfs"); 
           BufferedReader br = new BufferedReader(fr);
           this.allocationTechnique = Integer.parseInt( br.readLine() );
@@ -197,10 +198,9 @@ public class VFS {
           {	  
         	  this.SystemBlocks.add(Integer.parseInt(arrOfStr[i]));
           }
-          int counter = Integer.parseInt(br.readLine());
-          for (int i = 0 ; i< counter ; i++)
-          {   
-              arrOfStr = br.readLine().split(" ");
+          while ((st = br.readLine()) != null) 
+          {	  
+        	  arrOfStr= st.split(" ");
               if (arrOfStr.length > 2)        
               {	  
           		int index = arrOfStr[0].lastIndexOf('/');
@@ -218,10 +218,8 @@ public class VFS {
               else
               { 	  
             	   this.createFolder(arrOfStr[0]);
-              }	  
-           }
-     
-
+              }	 
+          }
 	 }
 	public VFS(java.io.File vfs) {
 		this.file = vfs;
@@ -274,11 +272,7 @@ public class VFS {
 			  buffer.write(Integer.toString(SystemBlocks.get(i))+" ");
 		  }
 		  buffer.newLine();
-		  buffer.write(Integer.toString(root.sizeOfRoot(buffer, 0)));
-		  buffer.newLine();
 		  root.writeFilesStructure(buffer);
-		  buffer.newLine();
-		  root.writeDirectoryStructure(0,buffer);
 		  buffer.close();
 
 		
