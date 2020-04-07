@@ -2,9 +2,9 @@ import java.util.ArrayList;
 
 
 public class File {
-	private Integer indexBlock;
-	private String filePath;
-	private ArrayList<Integer> allocatedBlocks;
+	public Integer indexBlock;
+	public String filePath;
+	public ArrayList<Integer> allocatedBlocks;
 	private boolean deleted;
 	public File(String path) {
 		filePath = path;
@@ -15,10 +15,7 @@ public class File {
 		this.allocatedBlocks = fileAllocatedBlocks;
 		deleted = false;
 	}
-	public File(String _path, Integer _indexBlock) {
-		this.filePath = _path;
-		this.indexBlock = _indexBlock;
-	}
+
 	public Integer getIndexBlock() {
 		return indexBlock;
 	}
@@ -35,4 +32,8 @@ public class File {
 	public boolean isDeleted () {
 		return deleted;
 	}
+	public ArrayList<Integer> allocated() {
+		return allocatedBlocks ;
+	}
+	
 }

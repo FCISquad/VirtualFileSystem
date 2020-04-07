@@ -8,10 +8,11 @@ public class Main {
 		//NN.test();
 		//NN.testFile();
 		int choice = 0 ;
+		
 		System.out.println("Choose: \n 1- Create New VFS File \n 2- Load existing VFS File");
 		Scanner in = new Scanner(System.in);
 		VFS v ;
-		while (true) {
+		   while (true) {
 			choice = in.nextInt();
 			if (choice == 1) {
 				System.out.print("Enter number of blocks: ");
@@ -21,13 +22,15 @@ public class Main {
 				v = new VFS(blocks, choice);
 				break;
 			} else if (choice == 2) {
-				v = new VFS(4, choice);
+				v = new VFS();
+				v.read();
 				break;
 			}
 			else {
 				System.out.println("Enter a valid input");
 			}	
-		}
+		 }
+	   
 		String command;
 		in.nextLine();
 		while(true) {

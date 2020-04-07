@@ -1,21 +1,29 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class VFS {
-	private int blocks; // wanted
-	private int allocationTechnique; // // wanted
+	private int blocks; // to add to file 
+	private int allocationTechnique; // to add to file 
 	private java.io.File file;
 	private Directory root;
-	private static ArrayList<Integer> SystemBlocks; // // wanted+ files(root+files)
-	
-	
-	private Integer indexBlockCounter;
-	private HashMap<Integer, ArrayList<Integer>> indexBlockToBlocks;
-	
-	public VFS(int blocks, int allocationTechnique) throws Throwable {
-		this.indexBlockCounter = 0;
-		indexBlockToBlocks = new HashMap<Integer, ArrayList<Integer>>();
+	private static ArrayList<Integer> SystemBlocks; // to add to file (root+files)
 		
+	
+	public VFS()
+	{
+		root = new Directory("root");	
+		SystemBlocks = new ArrayList<Integer>(blocks);
+		
+		for (int i = 0; i < blocks; i++) 
+			  SystemBlocks.add(0);
+	}
+	public VFS(int blocks, int allocationTechnique) throws Throwable {
 		
 		this.blocks = blocks;
 		this.allocationTechnique = allocationTechnique;
@@ -24,13 +32,6 @@ public class VFS {
 		
 		for (int i = 0; i < blocks; i++) 
 			  SystemBlocks.add(0);
-		
-		java.io.File file = new java.io.File("DiskStructure.vfs");
-
-		if (file.exists())
-			file.delete();
-		
-		file.createNewFile();
 	}
 	public static void main (String [] args) throws Throwable {
 		VFS vfs = new VFS(50, 1);
@@ -110,9 +111,8 @@ public class VFS {
 			
 			if ( fileAllocatedBlocks.size() == size ) {
 				spaceManager(fileAllocatedBlocks, true);
-				dir.addFile(new File(path, indexBlockCounter));
-				indexBlockToBlocks.put(indexBlockCounter, fileAllocatedBlocks);
-				indexBlockCounter++;
+				dir.addFile(new File(path,fileAllocatedBlocks));
+				
 				System.out.println( "File created Successfully" );
 				return true;
 			}
@@ -180,10 +180,49 @@ public class VFS {
 		
 		return true;
 	}
-	public boolean DisplayDiskStructure( ) {
-		root.printDirectoryStructure(0);
-		return true;
+	public boolean DisplayDiskStructure( ) throws IOException {
+		 root.printDirectoryStructure(0);
+		  return true;
+		
 	}
+	public void read() throws IOException
+	{	
+          FileReader fr = new FileReader("DiskStructure.vfs"); 
+          BufferedReader br = new BufferedReader(fr);
+          this.allocationTechnique = Integer.parseInt( br.readLine() );
+
+          this.blocks = Integer.parseInt(br.readLine()) ;
+          String[] arrOfStr = br.readLine().split(" ");
+          for(int i = 0 ; i < arrOfStr.length;i++ )
+          {	  
+        	  this.SystemBlocks.add(Integer.parseInt(arrOfStr[i]));
+          }
+          int counter = Integer.parseInt(br.readLine());
+          for (int i = 0 ; i< counter ; i++)
+          {   
+              arrOfStr = br.readLine().split(" ");
+              if (arrOfStr.length > 2)        
+              {	  
+          		int index = arrOfStr[0].lastIndexOf('/');
+        		String newPath = arrOfStr[0].substring(0, index);
+        		Directory dir = root.findDirectory(newPath, 2);
+				ArrayList<Integer> fileAllocatedBlocks = new ArrayList<Integer>();
+        		for(int j = 2 ; j < Integer.parseInt(arrOfStr[1])+2;j++)
+        		{	
+        			fileAllocatedBlocks.add(Integer.parseInt(arrOfStr[j]));
+        		}
+				dir.addFile(new File(arrOfStr[0], fileAllocatedBlocks));
+				spaceManager(fileAllocatedBlocks, true);
+        		
+              }
+              else
+              { 	  
+            	   this.createFolder(arrOfStr[0]);
+              }	  
+           }
+     
+
+	 }
 	public VFS(java.io.File vfs) {
 		this.file = vfs;
 	}
@@ -221,7 +260,29 @@ public class VFS {
 		System.out.println(temp.getFilePath());
 		DisplayDiskStructure();
 	}*/
-	public void close () {
-		//implement
+	public void close () throws IOException {
+		  FileWriter writer = new FileWriter("DiskStructure.vfs");  
+	      BufferedWriter buffer = new BufferedWriter(writer);  	
+	      
+	      buffer.write(Integer.toString(allocationTechnique));
+	      buffer.newLine();
+		  buffer.write(Integer.toString(blocks));
+	      buffer.newLine();
+
+		  for(int i = 0;i< blocks ; i++)
+		  {	  
+			  buffer.write(Integer.toString(SystemBlocks.get(i))+" ");
+		  }
+		  buffer.newLine();
+		  buffer.write(Integer.toString(root.sizeOfRoot(buffer, 0)));
+		  buffer.newLine();
+		  root.writeFilesStructure(buffer);
+		  buffer.newLine();
+		  root.writeDirectoryStructure(0,buffer);
+		  buffer.close();
+
+		
 	}
+
+	
 }

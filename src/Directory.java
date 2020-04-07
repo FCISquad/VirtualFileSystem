@@ -1,10 +1,15 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class Directory {
 	private String directoryPath;
 	private ArrayList<File> files;
 	private ArrayList<Directory> subDirectories;
 	private boolean deleted;
+	
 	
 	public Directory(String directoryPath) {
 		this.directoryPath = directoryPath;
@@ -108,5 +113,96 @@ public class Directory {
 		}
 		
 	}
+	public void writeDirectoryStructure(int level, BufferedWriter buffer) throws IOException {
+
+		String s = "";
+		for (int i=0; i < level; i++) {
+			s += "     ";
+		}
+		if (this.deleted == true)
+			return;
+		s += "* ";
+		int index = directoryPath.lastIndexOf('/');
+		String newPath;
+		if (index != -1)
+			newPath = directoryPath.substring(index+1,directoryPath.length());
+		else
+			newPath = directoryPath;
+		s += newPath;
+	    buffer.write(s);
+	    buffer.newLine();
+
+		s = "";
+		String temp = "";
+		
+		for (int i=0; i < files.size(); i++) {
+			if (files.get(i).isDeleted())
+				continue;
+			for (int j=0; j < level+1; j++) {
+				s += "     ";
+			}
+			s+= "* ";
+			temp = files.get(i).getFilePath();
+			index = temp.lastIndexOf('/');
+			newPath = temp.substring(index+1,temp.length());
+			s += newPath;
+			buffer.write(s);
+			buffer.newLine();
+			s = "";
+		}
+		for (int i=0; i< subDirectories.size(); i++) {
+			subDirectories.get(i).writeDirectoryStructure(level+1,buffer);
+		}
+		
+	}
+	public void writeFilesStructure(BufferedWriter buffer) throws IOException
+	{	
+       for (int i = 0 ; i<subDirectories.size();i++)
+       {	
+	    buffer.write(subDirectories.get(i).directoryPath+ " ");
+	    buffer.newLine();
+       }   
+
+	   for (int i=0; i< subDirectories.size(); i++) {
+		  subDirectories.get(i).writeFilesStructure( buffer);
+	   }
+	for (int i = 0 ; i < files.size();i++)
+	    {	
+	      ArrayList<Integer> arr = new ArrayList<Integer>();
+	      arr = files.get(i).allocated() ;
+		  buffer.write(files.get(i).getFilePath()+ " ");
+		  buffer.write(Integer.toString(arr.size())+ " ");
+		  for(int j = 0 ; j < arr.size(); j++)
+		  {	  
+			  buffer.write(Integer.toString(arr.get(j))+ " "); 
+		  }
+			  
+		  buffer.newLine();	
+	     }
+	
+	}
+	public int sizeOfRoot(BufferedWriter buffer, int s) throws IOException
+	{
+		s += files.size() ;		
+		s += subDirectories.size() ;
+		for (int i=0; i< subDirectories.size(); i++) {
+			s+= subDirectories.get(i).files.size();
+			s+=subDirectories.get(i).subDirectories.size() ;
+		}
+		return s ;	
+	}
+	public int numberOfFiles(BufferedWriter buffer, int s)
+	{
+		s += files.size() ;		
+		for (int i=0; i< subDirectories.size(); i++) {
+			s+= subDirectories.get(i).files.size();
+		}
+	  
+	 
+		return s ;
+	}
+	
+	
+	
 	
 }
