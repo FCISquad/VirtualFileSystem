@@ -1,15 +1,19 @@
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class Directory {
 	private String directoryPath;
 	private ArrayList<File> files;
 	private ArrayList<Directory> subDirectories;
+	private HashMap<String, String> usersCapabilities; 
 	private boolean deleted;
 	
 	
 	public Directory(String directoryPath) {
+		usersCapabilities = new HashMap<String, String>();
 		this.directoryPath = directoryPath;
 		subDirectories = new ArrayList<Directory>();
 		files = new ArrayList<File>();
@@ -51,6 +55,9 @@ public class Directory {
 	}
 	
 	void deleteFolder() {
+		// delete cap
+		VFS.deleteFromUser(usersCapabilities, directoryPath);
+		
 		for (int i=0 ; i<subDirectories.size(); i++)
 			subDirectories.get(i).deleteFolder();
 		for (int i=0; i<files.size(); i++)
@@ -163,24 +170,24 @@ public class Directory {
 	    }
       }   
 
-	   for (int i=0; i< subDirectories.size(); i++) {
-		  subDirectories.get(i).writeFilesStructure( buffer);
-	   }
-	for (int i = 0 ; i < files.size();i++)
+	   	for (int i=0; i< subDirectories.size(); i++) {
+	   		subDirectories.get(i).writeFilesStructure( buffer);
+	   	}
+	   	for (int i = 0 ; i < files.size();i++)
 	    {	
 		  if(!files.get(i).isDeleted())
 		  {		  
-             ArrayList<Integer> arr = new ArrayList<Integer>();
-              arr = files.get(i).allocated() ;
-              buffer.write(files.get(i).getFilePath()+ " ");
-              buffer.write(Integer.toString(arr.size())+ " ");
-              for(int j = 0 ; j < arr.size(); j++)
-              {	  
-	            buffer.write(Integer.toString(arr.get(j))+ " "); 
-              }
-	  
-              buffer.newLine();
-          }	
+		     ArrayList<Integer> arr = new ArrayList<Integer>();
+		      arr = files.get(i).allocated() ;
+		      buffer.write(files.get(i).getFilePath()+ " ");
+		  buffer.write(Integer.toString(arr.size())+ " ");
+		  for(int j = 0 ; j < arr.size(); j++)
+		  {	  
+			  buffer.write(Integer.toString(arr.get(j))+ " "); 
+		      }
+		  
+		      buffer.newLine();
+		  }	
  
 	    }
 	
@@ -197,7 +204,27 @@ public class Directory {
 	}
 
 	
+	public void addUser( String userName , String cap ) {
+		usersCapabilities.put(userName, cap);
+	}
 	
+	public void deleteUser( String userName ) {
+		if ( usersCapabilities.containsKey(userName) == true ) {
+			usersCapabilities.remove(userName);
+		}
+	}
 	
+	public HashMap<String, String> getCaps(){
+		return this.usersCapabilities;
+	}
+	
+	public String getCap( String userName ) {
+		if ( usersCapabilities.containsKey(userName) ) {
+			return usersCapabilities.get(userName);
+		}
+		else {
+			return "00";
+		}
+	}
 	
 }

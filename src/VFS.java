@@ -4,8 +4,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry.Entry;
 
 public class VFS {
+	private User currentUser;
+	private static ArrayList<User> users;
 	private int blocks; // to add to file 
 	private int allocationTechnique; // to add to file 
 	private Directory root;
@@ -14,6 +19,8 @@ public class VFS {
 	
 	public VFS()
 	{
+		users = new ArrayList<User>();
+		
 		root = new Directory("root");	
 		SystemBlocks = new ArrayList<Integer>(blocks);
 		
@@ -21,6 +28,10 @@ public class VFS {
 			  SystemBlocks.add(0);
 	}
 	public VFS(int blocks, int allocationTechnique) throws Throwable {
+		users = new ArrayList<User>();
+		
+		User adminUser = new User("admin" , "admin");
+		users.add(adminUser);
 		
 		this.blocks = blocks;
 		this.allocationTechnique = allocationTechnique;
@@ -274,9 +285,137 @@ public class VFS {
 		  buffer.newLine();
 		  root.writeDirectoryStructure(0, buffer);
 		  buffer.close();
-
-		
 	}
-
 	
+	public void createDir(String path) {
+		int index = path.lastIndexOf('/');
+		
+		String subPath = "root"; 
+		if ( index != -1 ) {
+			subPath = path.substring(0, index);
+		}
+		
+		Directory dir1 = root.findDirectory(subPath, 2);
+		String cap = dir1.getCap( currentUser.getUserName() );
+		if ( currentUser.getUserName().equalsIgnoreCase("admin") || cap.charAt(0) == '1') {
+			createFolder(path);
+			Directory dir = root.findDirectory(path, 2);
+			dir.addUser(currentUser.getUserName(), "11");
+			currentUser.add(path);
+		}
+		else {
+			System.out.println("Access Denied");
+		}
+	}
+	
+	
+	public static void deleteFromUser(HashMap<String, String> hp , String path) {
+		for (java.util.Map.Entry<String, String> entry : hp.entrySet()) {
+		    for ( int i = 0; i < users.size(); ++i ) {
+		    	if ( users.get(i).getUserName().equalsIgnoreCase(entry.getKey()) ) {
+		    		users.get(i).delete(entry.getValue());
+		    		break;
+		    	}
+		    }
+		}
+	}
+	public void deleteDir( String path ) {		
+		Directory dir = root.findDirectory(path, 2);
+		String cap = dir.getCap( currentUser.getUserName() );
+		if ( currentUser.getUserName().equalsIgnoreCase("admin") || cap.charAt(1) == '1') {			
+			deleteFolder(path);
+		}
+		else {
+			System.out.println("Access Denied");
+		}
+	}
+	
+	public void tellUser() {
+		System.out.println(currentUser.getUserName());
+	}
+	public void createUser( String userName , String password ) {
+		if ( currentUser.getUserName().equalsIgnoreCase("admin") ) {
+			
+			boolean found = false;
+			for ( int i = 0; i < users.size(); i++ ) {
+				if ( users.get(i).getUserName().equalsIgnoreCase(userName) ) {
+					found = true;
+					break;
+				}
+			}
+			
+			if (found == true) {
+				System.out.println( "ERROR: Username already exists" );
+			}
+			else {
+				User newUser = new User(userName , password);
+				users.add(newUser);
+			}
+		}
+		else {
+			System.out.println( "ERROR: Current user is not Admin" );
+		}
+	}
+	
+	public void login( String userName , String password ) {
+		for ( int i = 0; i < users.size(); i++ ) {
+			if ( users.get(i).login(userName, password)) {
+				currentUser = users.get(i);
+				System.out.println( "Logged in successfully" );
+				return ;
+			}
+		}
+		System.out.println( "ERROR: Login faild" );
+	}
+	
+	public void logout() {
+		currentUser = null;
+		System.out.println( "User logged out." );
+	}
+	
+	public void deleteUser( String userName ) {
+		Directory dir = null;
+		if ( currentUser.getUserName().equalsIgnoreCase("admin") ) {
+			for ( int i = 0; i < users.size(); ++i ) {
+				if ( users.get(i).getUserName().equalsIgnoreCase(userName) ) {
+					ArrayList<String> listOfDir = users.get(i).getDirectories();
+					
+					for ( int j = 0; j < listOfDir.size(); ++j ) {
+						dir = root.findDirectory(listOfDir.get(j), 2);
+						dir.deleteUser(userName);
+					}
+					
+					users.remove(i);
+					return;
+				}
+			}	
+			System.out.println("There is no such user with this name");
+		}
+		else {
+			System.out.println( "ERROR: Current user is not Admin" );
+		}
+	}
+	
+	public void grant(String userName , String path , String cap) {
+		if ( currentUser.getUserName().equalsIgnoreCase("admin") ) {
+			for ( int i = 0; i < users.size(); ++i ) {
+				if ( users.get(i).getUserName().equalsIgnoreCase(userName) ){
+					
+					Directory dir = root.findDirectory(path, 2);
+					if ( dir == null ) {
+						System.out.println( "No such directory" );
+					}
+					else {
+						dir.addUser(userName, cap);
+						System.out.println( "User granted successfully" );
+					}
+					return;
+				}
+			}
+			System.out.println("There is no such user with this name");
+		}
+		else {
+			System.out.println( "ERROR: Current user is not Admin" );
+		}
+	}
 }

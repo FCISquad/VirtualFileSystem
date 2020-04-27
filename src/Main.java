@@ -53,7 +53,7 @@ public class Main {
 				
 			} else if (split[0].equalsIgnoreCase("CreateFolder")) {
 				
-				v.createFolder(split[1]);
+				v.createDir(split[1]);
 				
 			} else if (split[0].equalsIgnoreCase("DeleteFile")) {
 				
@@ -61,7 +61,7 @@ public class Main {
 				
 			} else if (split[0].equalsIgnoreCase("DeleteFolder")) {
 				
-				v.deleteFolder(split[1]);
+				v.deleteDir(split[1]);
 				
 			} else if (split[0].equalsIgnoreCase("DisplayDiskStatus")) {
 				
