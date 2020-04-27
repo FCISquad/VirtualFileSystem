@@ -1,16 +1,13 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class VFS {
 	private int blocks; // to add to file 
 	private int allocationTechnique; // to add to file 
-	private java.io.File file;
 	private Directory root;
 	private static ArrayList<Integer> SystemBlocks; // to add to file (root+files)
 		
@@ -196,9 +193,9 @@ public class VFS {
           String[] arrOfStr = br.readLine().split(" ");
           for(int i = 0 ; i < arrOfStr.length;i++ )
           {	  
-        	  this.SystemBlocks.add(Integer.parseInt(arrOfStr[i]));
+        	  SystemBlocks.add(Integer.parseInt(arrOfStr[i]));
           }
-          while ((st = br.readLine()) != null) 
+          while ((st = br.readLine()) != "End") 
           {	  
         	  arrOfStr= st.split(" ");
               if (arrOfStr.length > 2)        
@@ -216,14 +213,14 @@ public class VFS {
         		
               }
               else
-              { 	  
-            	   this.createFolder(arrOfStr[0]);
+              {    if(st.contentEquals( "End")) 
+            	       break ;           	       
+            	   else 
+            		   this.createFolder(arrOfStr[0]);  
               }	 
           }
+          br.close();
 	 }
-	public VFS(java.io.File vfs) {
-		this.file = vfs;
-	}
 	
 	/*public void test() {
 		Directory dir1 = new Directory("root/folder1");
@@ -273,6 +270,9 @@ public class VFS {
 		  }
 		  buffer.newLine();
 		  root.writeFilesStructure(buffer);
+		  buffer.write("End");
+		  buffer.newLine();
+		  root.writeDirectoryStructure(0, buffer);
 		  buffer.close();
 
 		
