@@ -48,8 +48,19 @@ public class Main {
 				break;
 			}
 			String [] split = command.split(" ");
-			if (split[0].equalsIgnoreCase("CreateFile")) {
-				v.createFile(split[1], Integer.parseInt(split[2]));
+			if (split[0].equalsIgnoreCase("login")) {
+				v.login(split[1], split[2]);
+			} else if (split[0].equalsIgnoreCase("CreateUser")) {
+				v.createUser(split[1], split[2]);
+			} else if (split[0].equalsIgnoreCase("DeleteUser")) {
+				v.deleteUser(split[1]);
+			} else if (split[0].equalsIgnoreCase("TellUser")) {
+				v.tellUser();;
+			} else if (split[0].equalsIgnoreCase("Grant")) {
+				v.grant(split[1], split[2], split[3]);
+			}
+			else if (split[0].equalsIgnoreCase("CreateFile")) {
+				v.createFileA(split[1], Integer.parseInt(split[2]));
 				
 			} else if (split[0].equalsIgnoreCase("CreateFolder")) {
 				
@@ -57,7 +68,7 @@ public class Main {
 				
 			} else if (split[0].equalsIgnoreCase("DeleteFile")) {
 				
-				v.deleteFile(split[1]);
+				v.deleteFileA(split[1]);
 				
 			} else if (split[0].equalsIgnoreCase("DeleteFolder")) {
 				

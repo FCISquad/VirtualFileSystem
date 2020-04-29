@@ -7,6 +7,7 @@ public class User {
 	public User( String _userName , String _password ) {
 		userName = _userName; 
 		password = _password;
+		directories = new ArrayList<String>();
 	}
 	public String getPassword() {
 		return password;

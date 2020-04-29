@@ -160,6 +160,20 @@ public class Directory {
 		}
 		
 	}
+	public void saveCapabilities(BufferedWriter buffer) throws IOException
+	{	
+		if (!deleted) {
+			buffer.write(directoryPath+ ",");
+			for (Entry<String, String> entry : usersCapabilities.entrySet()) {
+				buffer.write(entry.getKey()+","+entry.getValue()+",");
+			}
+			buffer.newLine();
+	
+		   	for (int i=0; i< subDirectories.size(); i++) {
+		   		subDirectories.get(i).saveCapabilities(buffer);
+		   	}
+		}
+	}
 	public void writeFilesStructure(BufferedWriter buffer) throws IOException
 	{	
        for (int i = 0 ; i<subDirectories.size();i++)

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry.Entry;
 
 public class VFS {
 	private User currentUser;
@@ -16,11 +15,9 @@ public class VFS {
 	private Directory root;
 	private static ArrayList<Integer> SystemBlocks; // to add to file (root+files)
 		
-	
 	public VFS()
 	{
 		users = new ArrayList<User>();
-		
 		root = new Directory("root");	
 		SystemBlocks = new ArrayList<Integer>(blocks);
 		
@@ -231,42 +228,54 @@ public class VFS {
               }	 
           }
           br.close();
+          FileReader frUsers = new FileReader("user.txt"); 
+          BufferedReader brUsers = new BufferedReader(frUsers);
+          String lineUser = null;
+          while (true) {
+          	lineUser = brUsers.readLine();
+          	if (lineUser == null)
+          		break;
+          	String [] split = lineUser.split(",");
+          	users.add(new User(split[0], split[1]));
+          }
+          brUsers.close();
+          FileReader frCap = new FileReader("capabilities.txt"); 
+          BufferedReader brCap = new BufferedReader(frCap);
+          String lineCap = null;
+          while (true) {
+          	lineCap = brCap.readLine();
+          	if (lineCap == null)
+          		break;
+          	String [] split = lineCap.split(",");
+          	Directory dir = root.findDirectory(split[0], 2);
+          	for (int i=1 ; i<split.length ; i+=2)
+          	{
+          		String username = split[i];
+          		String cap = split[i+1];
+          		dir.addUser(username, cap);
+      			for ( int j = 0; j < users.size(); ++j ) {
+      				if ( users.get(j).getUserName().equalsIgnoreCase(username) ){
+      					users.get(j).add(split[0]);
+      				}
+      			}
+          	}
+          }
+          brCap.close();
 	 }
 	
-	/*public void test() {
-		Directory dir1 = new Directory("root/folder1");
-		Directory dir2 = new Directory("root/folder1/folder2");
-		Directory dir3 = new Directory("root/folder2");
-		Directory dir4 = new Directory("root/folder2/hussien");
-		dir1.subDirectories.add(dir2);
-		dir3.subDirectories.add(dir4);
-		root.subDirectories.add(dir1);
-		root.subDirectories.add(dir3);
-		Directory temp = root.findDirectory("root", 2);
-		System.out.println(temp.directoryPath);
-	}
-	public void testFile() { 
-		Directory dir0 = new Directory("root/folder1");
-		File f = new File("root/folder1/khaled.txt");
-		File f2 = new File("root/folder2/temp.txt");
-		File f3 = new File("root/ehap.txt");
-		root.files.add(f3);
-		Directory dir2 = new Directory("root/folder1/folder2");
-		Directory dir3 = new Directory("root/folder2");
-		Directory dir4 = new Directory("root/folder2/hussien");
-		dir0.files.add(f);
-		dir3.files.add(f2);
-		dir0.subDirectories.add(dir2);
-		dir3.subDirectories.add(dir4);
-		root.subDirectories.add(dir0);
-		root.subDirectories.add(dir3);
-		File temp = root.findFile("root/folder1/khaled.txt");
-		System.out.println(temp.getFilePath());
-		temp = root.findFile("root/folder2/temp.txt");
-		System.out.println(temp.getFilePath());
-		DisplayDiskStructure();
-	}*/
 	public void close () throws IOException {
+	      FileWriter userFile = new FileWriter("user.txt"); 
+	      BufferedWriter bufferUser = new BufferedWriter(userFile);
+	      for (int i=0 ; i<users.size() ; i++) {
+	    	  bufferUser.write(users.get(i).getUserName() + "," + users.get(i).getPassword());
+	    	  bufferUser.newLine();
+	      }
+	      bufferUser.close();
+		  FileWriter writerCap = new FileWriter("capabilities.txt");  
+	      BufferedWriter bufferCap = new BufferedWriter(writerCap);  
+	      root.saveCapabilities(bufferCap);
+	      bufferCap.close();
+	      
 		  FileWriter writer = new FileWriter("DiskStructure.vfs");  
 	      BufferedWriter buffer = new BufferedWriter(writer);  	
 	      
@@ -288,8 +297,12 @@ public class VFS {
 	}
 	
 	public void createDir(String path) {
+		if (currentUser == null)
+		{
+			System.out.println("You should be logged in!");
+			return;
+		}
 		int index = path.lastIndexOf('/');
-		
 		String subPath = "root"; 
 		if ( index != -1 ) {
 			subPath = path.substring(0, index);
@@ -308,6 +321,24 @@ public class VFS {
 		}
 	}
 	
+	public void createFileA(String path, int size) {
+		int index = path.lastIndexOf('/');
+		
+		String subPath = "root"; 
+		if ( index != -1 ) {
+			subPath = path.substring(0, index);
+		}
+		
+		Directory dir1 = root.findDirectory(subPath, 2);
+		String cap = dir1.getCap( currentUser.getUserName() );
+		if ( currentUser.getUserName().equalsIgnoreCase("admin") || cap.charAt(0) == '1') {
+			createFile(path, size);
+		}
+		else {
+			System.out.println("Access Denied");
+		}
+	}
+	
 	
 	public static void deleteFromUser(HashMap<String, String> hp , String path) {
 		for (java.util.Map.Entry<String, String> entry : hp.entrySet()) {
@@ -319,7 +350,12 @@ public class VFS {
 		    }
 		}
 	}
-	public void deleteDir( String path ) {		
+	public void deleteDir( String path ) {	
+		if (currentUser == null)
+		{
+			System.out.println("You should be logged in!");
+			return;
+		}
 		Directory dir = root.findDirectory(path, 2);
 		String cap = dir.getCap( currentUser.getUserName() );
 		if ( currentUser.getUserName().equalsIgnoreCase("admin") || cap.charAt(1) == '1') {			
@@ -329,7 +365,28 @@ public class VFS {
 			System.out.println("Access Denied");
 		}
 	}
-	
+	public void deleteFileA(String path) {
+		if (currentUser == null)
+		{
+			System.out.println("You should be logged in!");
+			return;
+		}
+		int index = path.lastIndexOf('/');
+		String subPath = "root"; 
+		if ( index != -1 ) {
+			subPath = path.substring(0, index);
+		}
+		
+		Directory dir = root.findDirectory(subPath, 2);
+		String cap = dir.getCap( currentUser.getUserName() );
+		if ( currentUser.getUserName().equalsIgnoreCase("admin") || cap.charAt(1) == '1') {			
+			deleteFile(path);
+		}
+		else {
+			System.out.println("Access Denied");
+		}
+		
+	}
 	public void tellUser() {
 		System.out.println(currentUser.getUserName());
 	}
@@ -350,6 +407,7 @@ public class VFS {
 			else {
 				User newUser = new User(userName , password);
 				users.add(newUser);
+				System.out.println("User created successfully");
 			}
 		}
 		else {
@@ -407,6 +465,7 @@ public class VFS {
 					}
 					else {
 						dir.addUser(userName, cap);
+						users.get(i).add(path);
 						System.out.println( "User granted successfully" );
 					}
 					return;
